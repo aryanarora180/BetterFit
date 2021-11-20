@@ -1,4 +1,4 @@
-package com.example.betterfit.ui.signin
+package com.example.betterfit.ui.login
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -21,8 +21,28 @@ import com.example.betterfit.ui.theme.BetterFitTheme
 @Composable
 fun SignInScreen() {
     Scaffold { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+        Column(modifier = Modifier.padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally) {
             BetterFitHeader()
+
+            Button(
+                onClick = {/*TODO*/},
+                modifier = Modifier.padding(top = 280.dp)
+            )
+            {
+                Image(
+                    painter = painterResource(id = R.drawable.google_icon),
+                    contentDescription = null,
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .padding(4.dp)
+                )
+                Text(
+                    text= "Sign In",
+                    style = MaterialTheme.typography.h5,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(4.dp))
+            }
         }
     }
 }
@@ -41,33 +61,13 @@ fun BetterFitHeader() {
                 .padding(top = 128.dp)
         )
         Text(
-            text = stringResource(id = R.string.app_name),
+            text = "BetterFit",
             style = MaterialTheme.typography.h3,
-            color = colorResource(id = R.color.white),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
         )
-        Button(
-            onClick = {/*TODO*/},
-            modifier = Modifier.padding(top = 280.dp)
-        )
-        {
-            Image(
-                painter = painterResource(id = R.drawable.google_icon),
-                contentDescription = null,
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .padding(4.dp)
-            )
-            Text(
-                text= stringResource(id = R.string.sign_in),
-                style = MaterialTheme.typography.h5,
-                color = colorResource(id = R.color.black),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.padding(4.dp))
-        }
     }
 }
 
