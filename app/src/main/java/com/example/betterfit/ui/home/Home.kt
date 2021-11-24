@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -20,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.betterfit.ui.data.TrendingCompetition
+import com.example.betterfit.data.Competition
 import com.example.betterfit.ui.theme.BetterFitTheme
 
 @Composable
@@ -40,7 +39,7 @@ fun HomeScreen() {
             TrendingCompetitions(
                 isLoading = false,
                 competitions = MutableList(12) {
-                    TrendingCompetition(
+                    Competition(
                         competitionName = "2500 steps a day",
                         competitionDuration = "1 week",
                         competitionRegistered = 200
@@ -88,7 +87,7 @@ fun SearchBar(
 @Composable
 fun TrendingCompetitions(
     isLoading: Boolean = true,
-    competitions: List<TrendingCompetition>? = null,
+    competitions: List<Competition>? = null,
 ) {
     Text(text = "What's trending",
         style = MaterialTheme.typography.h5,
@@ -109,7 +108,7 @@ fun TrendingCompetitions(
 
 @Composable
 fun TrendingCompetitionCard(
-    competition: TrendingCompetition,
+    competition: Competition,
 ) {
     Card(
         modifier = Modifier.padding(horizontal = 8.dp)
