@@ -23,6 +23,7 @@ import com.example.betterfit.ui.theme.BetterFitTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.Scopes
 import com.google.android.gms.common.api.Scope
 import kotlinx.coroutines.launch
 
@@ -36,8 +37,8 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
         context,
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
-            .requestScopes(Scope("https://www.googleapis.com/auth/fitness.activity.read"))
-            .requestIdToken("150943160797-355b6ahtcb1t4mcp1saq94mo6qpaod6g.apps.googleusercontent.com")
+            .requestScopes(Scope(Scopes.FITNESS_ACTIVITY_READ))
+            .requestServerAuthCode("150943160797-355b6ahtcb1t4mcp1saq94mo6qpaod6g.apps.googleusercontent.com")
             .build()
     )
     val signInIntent = googleSignInClient.signInIntent
@@ -50,10 +51,10 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
             if (task.isSuccessful) {
                 viewModel.isSigningIn = false
                 snackbarCoroutineScope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar("Sign in success")
+                    scaffoldState.snackbarHostState.showSnackbar("Sign in success. Server auth code: ${task.result.serverAuthCode}")
                 }
             } else {
-                viewModel.isSigningIn = false
+                viewModel.isSigningIn = false   
                 snackbarCoroutineScope.launch {
                     scaffoldState.snackbarHostState.showSnackbar("Sign in failed")
                 }
