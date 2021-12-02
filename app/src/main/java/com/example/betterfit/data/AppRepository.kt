@@ -37,10 +37,11 @@ class AppRepository {
         }
     }
 
-    suspend fun getTrendingCompetitions(): OperationResult<List<Competition>> {
+    suspend fun getHomeContent(authToken: String): OperationResult<Pair<List<Competition>, List<Competition>>> {
         return try {
-            val result = apiClient.getTrendingCompetitions()
-            OperationResult.Success(result)
+            val trending = apiClient.getTrendingCompetitions()
+            val registered = apiClient.getRegisteredCompetitions("Bearer $authToken")
+            OperationResult.Success(Pair(trending, registered))
         } catch (e: HttpException) {
             OperationResult.Error(
                 e.response()?.code() ?: 500,

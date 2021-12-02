@@ -4,15 +4,10 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.example.betterfit.data.Competition
 import com.example.betterfit.helper.DataStoreUtils
 import com.example.betterfit.ui.competitions.details.CompetitionDetailsScreen
 import com.example.betterfit.ui.competitions.leaderboard.CompetitionProgressScreen
@@ -42,11 +37,14 @@ class MainActivity : ComponentActivity() {
             BetterFitTheme {
                 navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "home") {
+                NavHost(navController = navController, startDestination = "login") {
                     composable("home") {
                         HomeScreen(
-                            onCompetitionTap = {
+                            onTrendingTap = {
                                 navController.navigate("competition/$it")
+                            },
+                            onRegisteredTap = {
+                                navController.navigate("progress/$it")
                             }
                         )
                     }

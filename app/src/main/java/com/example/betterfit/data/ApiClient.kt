@@ -44,6 +44,11 @@ object ApiClient {
         @GET("competition/trending/")
         suspend fun getTrendingCompetitions(): List<Competition>
 
+        @GET("competition/registered/")
+        suspend fun getRegisteredCompetitions(
+            @Header("Authorization") bearerToken: String,
+        ): List<Competition>
+
         @GET("competition/details/{competition_id}/")
         suspend fun getCompetitionDetails(
             @Path("competition_id") competitionId: String,

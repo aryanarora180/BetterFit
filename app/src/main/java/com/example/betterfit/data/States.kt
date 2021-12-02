@@ -11,7 +11,8 @@ sealed class HomeState {
             "Running",
             "Move minutes",
             "Heart points"
-        )
+        ),
+        val registered: List<Competition>
     ) : HomeState()
 
     class Error(val message: String) : HomeState()

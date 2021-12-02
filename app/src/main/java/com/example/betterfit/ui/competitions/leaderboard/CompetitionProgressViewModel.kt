@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.betterfit.data.AppRepository
 import com.example.betterfit.data.OperationResult
 import com.example.betterfit.data.ProgressState
-import com.example.betterfit.helper.DataStoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
