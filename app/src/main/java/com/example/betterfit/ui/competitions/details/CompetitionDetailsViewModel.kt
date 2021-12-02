@@ -1,12 +1,10 @@
 package com.example.betterfit.ui.competitions.details
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.betterfit.data.AppRepository
 import com.example.betterfit.data.CompetitionDetailsState
-import com.example.betterfit.data.HomeState
 import com.example.betterfit.data.OperationResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -39,11 +37,11 @@ class CompetitionDetailsViewModel @Inject constructor(
     fun registerForCompetition() {
         val stateBackup = state.value
 
-        state.value = CompetitionDetailsState.Registering
+        state.value = CompetitionDetailsState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             when (val result = repository.registerToCompetition(_competitionId)) {
                 is OperationResult.Success -> {
-
+                    state.value = CompetitionDetailsState.TakePayment(result.data.clientSecret)
                 }
 
                 is OperationResult.Error -> {

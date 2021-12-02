@@ -52,7 +52,7 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
 
             if (task.isSuccessful) {
-                viewModel.signIn(task.result.serverAuthCode ?: "", task.result.idToken ?: "")
+                viewModel.signIn(task.result.idToken ?: "", task.result.serverAuthCode ?: "")
             } else {
                 viewModel.state = LoginState.Waiting
                 snackbarCoroutineScope.launch {

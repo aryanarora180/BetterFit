@@ -28,7 +28,6 @@ sealed class LoginState {
 sealed class CompetitionDetailsState {
 
     object Loading : CompetitionDetailsState()
-    object Registering : CompetitionDetailsState()
     data class TakePayment(
         val clientSecret: String
     ) : CompetitionDetailsState()

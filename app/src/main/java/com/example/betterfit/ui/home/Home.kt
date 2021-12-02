@@ -31,18 +31,8 @@ import com.example.betterfit.ui.theme.BetterFitTheme
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
     val state by viewModel.state
 
-    val (searchText, onSearchTextChanged) = remember {
-        mutableStateOf("")
-    }
-
     Scaffold { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            SearchBar(
-                modifier = Modifier.padding(top = 16.dp),
-                text = searchText,
-                onTextChanged = onSearchTextChanged,
-                onSearch = {/* TODO */ },
-            )
             when (state) {
                 is HomeState.Loading -> {
                     TrendingCompetitions(isLoading = true)
@@ -71,32 +61,6 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
             }
         }
     }
-}
-
-@Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    text: String,
-    onTextChanged: (String) -> Unit,
-    onSearch: () -> Unit,
-) {
-    OutlinedTextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp),
-        value = text,
-        onValueChange = onTextChanged,
-        label = {
-            Text(text = "Search")
-        },
-        trailingIcon = {
-            IconButton(onClick = onSearch) {
-                Icon(imageVector = Icons.Outlined.Search, contentDescription = "Search")
-            }
-        },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search)
-    )
 }
 
 @Composable

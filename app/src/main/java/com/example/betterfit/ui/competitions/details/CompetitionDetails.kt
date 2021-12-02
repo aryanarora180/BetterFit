@@ -64,6 +64,10 @@ fun CompetitionDetailsScreen(
                 is CompetitionDetailsState.TakePayment -> {
                     onJoinCompetition((state as CompetitionDetailsState.TakePayment).clientSecret)
                 }
+
+                is CompetitionDetailsState.Registered -> {
+                    TODO("Navigate to progress page")
+                }
             }
         }
     }

@@ -12,9 +12,9 @@ class AppRepository {
 
     private val apiClient = ApiClient.build()
 
-    suspend fun signIn(authCode: String): OperationResult<LoginResponse> {
+    suspend fun signIn(idToken: String, authCode: String): OperationResult<LoginResponse> {
         return try {
-            val result = apiClient.signIn(LoginRequestBody(authCode))
+            val result = apiClient.signIn(LoginRequestBody(idToken, authCode))
             OperationResult.Success(result)
         } catch (e: HttpException) {
             e.printStackTrace()
@@ -55,11 +55,13 @@ class AppRepository {
         }
     }
 
-    suspend fun registerToCompetition(competitionId: String): OperationResult<Unit> {
+    suspend fun registerToCompetition(competitionId: String): OperationResult<RegisterCompetitionResponse> {
         return try {
-            apiClient.registerToCompetition(dataStoreUtils.getUserId() ?: "", competitionId)
-            OperationResult.Success(Unit)
+            //TODO: Take user id as param
+            val result = apiClient.registerToCompetition("123", competitionId)
+            OperationResult.Success(result)
         } catch (e: HttpException) {
+            e.printStackTrace()
             OperationResult.Error(
                 e.response()?.code() ?: 500,
                 e.response()?.errorBody()?.string() ?: DEFAULT_ERROR_MESSAGE

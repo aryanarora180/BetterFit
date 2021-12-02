@@ -9,10 +9,9 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class DataStoreUtils {
-
-    @Inject
-    lateinit var dataStore: DataStore<Preferences>
+class DataStoreUtils(
+    private val dataStore: DataStore<Preferences>
+) {
 
     private val KEY_AUTH_TOKEN = stringPreferencesKey("auth_token")
     private val KEY_USER_ID = stringPreferencesKey("user_id")
