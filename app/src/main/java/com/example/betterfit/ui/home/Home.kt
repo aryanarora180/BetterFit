@@ -20,15 +20,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.betterfit.data.Competition
 import com.example.betterfit.data.HomeState
+import com.example.betterfit.helper.parseAndFormatAsDate
 import com.example.betterfit.ui.CenteredView
 import com.example.betterfit.ui.ServerConnectionError
 import com.example.betterfit.ui.theme.BetterFitTheme
+import java.util.*
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onCompetitionTap: (String) -> Unit) {
@@ -110,11 +113,15 @@ fun TrendingCompetitionCard(
         ) {
             Text(text = competition.title, style = MaterialTheme.typography.subtitle1)
             Text(
-                text = "${competition.startDate} to ${competition.endDate}",
+                text = "${competition.startDate.parseAndFormatAsDate()} to ${competition.endDate.parseAndFormatAsDate()}",
                 style = MaterialTheme.typography.subtitle2
             )
             Text(
-                text = competition.category,
+                text = competition.category.replaceFirstChar {
+                    if (it.isLowerCase()) it.titlecase(
+                        Locale.US
+                    ) else it.toString()
+                },
                 style = MaterialTheme.typography.body2
             )
         }

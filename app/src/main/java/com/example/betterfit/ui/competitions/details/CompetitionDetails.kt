@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.betterfit.data.Competition
 import com.example.betterfit.data.CompetitionDetailsState
+import com.example.betterfit.helper.parseAndFormatAsDate
 import com.example.betterfit.ui.CenteredView
 import com.example.betterfit.ui.ServerConnectionError
 import com.example.betterfit.ui.theme.BetterFitTheme
@@ -83,7 +84,7 @@ fun CompetitionDetails(
     CompetitionHeader(
         modifier = Modifier.padding(top = 24.dp),
         competitionName = competition.title,
-        competitionDuration = "${competition.startDate} to ${competition.endDate}"
+        competitionDuration = "${competition.startDate.parseAndFormatAsDate()} to ${competition.endDate.parseAndFormatAsDate()}"
     )
 
     if (competition.entryFee != 0) {

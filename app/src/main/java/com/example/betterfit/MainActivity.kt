@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
             BetterFitTheme {
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "login") {
+                NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
                         HomeScreen(
                             onCompetitionTap = {
