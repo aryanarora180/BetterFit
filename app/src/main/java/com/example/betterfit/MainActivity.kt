@@ -12,8 +12,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.betterfit.data.Competition
 import com.example.betterfit.helper.DataStoreUtils
 import com.example.betterfit.ui.competitions.details.CompetitionDetailsScreen
+import com.example.betterfit.ui.competitions.leaderboard.CompetitionProgressScreen
 import com.example.betterfit.ui.home.HomeScreen
 import com.example.betterfit.ui.login.SignInScreen
 import com.example.betterfit.ui.theme.BetterFitTheme
@@ -29,22 +31,12 @@ class MainActivity : ComponentActivity() {
     lateinit var dataStoreUtils: DataStoreUtils
 
     private lateinit var navController: NavHostController
-
     private lateinit var paymentSheet: PaymentSheet
+    private lateinit var competitionId: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
-
-        lifecycleScope.launchWhenCreated {
-            if (dataStoreUtils.getAuthToken().isNullOrEmpty() || dataStoreUtils.getUserId()
-                    .isNullOrEmpty()
-            ) {
-                Log.e(javaClass.simpleName, "User is signed in")
-            } else {
-                Log.e(javaClass.simpleName, "User is not signed in")
-            }
-        }
 
         setContent {
             BetterFitTheme {
@@ -67,14 +59,18 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("competition/{competitionId}") { backStackEntry ->
+                        competitionId = backStackEntry.arguments?.getString("competitionId") ?: ""
                         CompetitionDetailsScreen(
-                            competitionId =
-                            backStackEntry.arguments?.getString("competitionId") ?: "",
+                            competitionId = competitionId,
                             onJoinCompetition = {
-                                val configuration = PaymentSheet.Configuration("Example, Inc.")
+                                val configuration = PaymentSheet.Configuration("BetterFit")
                                 paymentSheet.presentWithPaymentIntent(it, configuration)
                             }
                         )
+                    }
+                    composable("progress/{competitionId}") { backStackEntry ->
+                        competitionId = backStackEntry.arguments?.getString("competitionId") ?: ""
+                        CompetitionProgressScreen(competitionId = competitionId)
                     }
                 }
             }
@@ -84,13 +80,13 @@ class MainActivity : ComponentActivity() {
     private fun onPaymentSheetResult(paymentResult: PaymentSheetResult) {
         when (paymentResult) {
             is PaymentSheetResult.Completed -> {
-                Log.e("StripePayment", "Payment complete")
+                navController.navigate("progress/$competitionId")
             }
             is PaymentSheetResult.Canceled -> {
-                Log.e("StripePayment", "Payment canceled")
+                Log.e("StripePayment", "Payment canceled.")
             }
             is PaymentSheetResult.Failed -> {
-                Log.e("StripePayment", "Payment failed")
+                Log.e("StripePayment", "Payment failed.")
             }
         }
     }

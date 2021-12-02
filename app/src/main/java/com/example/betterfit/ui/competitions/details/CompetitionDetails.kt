@@ -2,8 +2,6 @@ package com.example.betterfit.ui.competitions.details
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,9 +25,7 @@ fun CompetitionDetailsScreen(
     viewModel: CompetitionDetailsViewModel = hiltViewModel(),
     onJoinCompetition: (String) -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.getCompetitionDetails(competitionId)
-    }
+    LaunchedEffect(Unit) { viewModel.getCompetitionDetails(competitionId) }
 
     Scaffold { innerPadding ->
         Column(
@@ -144,7 +140,7 @@ fun CompetitionHeader(
         )
         Text(
             text = competitionDuration,
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.subtitle1,
             textAlign = TextAlign.Center
         )
     }

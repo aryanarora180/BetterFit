@@ -45,3 +45,15 @@ sealed class CompetitionDetailsState {
 
     class Error(val message: String) : CompetitionDetailsState()
 }
+
+sealed class ProgressState {
+
+    object Loading : ProgressState()
+
+    data class Data(
+        val competition: Competition,
+        val progress: List<Registration>
+    ) : ProgressState()
+
+    class Error(val message: String) : ProgressState()
+}

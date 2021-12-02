@@ -54,5 +54,10 @@ object ApiClient {
             @Header("Authorization") bearerToken: String,
             @Path("competition_id") competitionId: String,
         ): RegisterCompetitionResponse
+
+        @GET("registration/leaderboard/{competition_id}")
+        suspend fun getLeaderboard(
+            @Path("competition_id") competitionId: String,
+        ): List<Registration>
     }
 }

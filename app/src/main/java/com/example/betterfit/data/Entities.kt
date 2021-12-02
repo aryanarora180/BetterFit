@@ -1,6 +1,7 @@
 package com.example.betterfit.data
 
 import com.squareup.moshi.Json
+import java.io.Serializable
 
 data class LoginRequestBody(
     @field:Json(name = "googleId") val idToken: String,
@@ -21,9 +22,12 @@ data class Competition(
     @field:Json(name = "prizePool") val prizePool: Int,
     @field:Json(name = "startDate") val startDate: String,
     @field:Json(name = "endDate") val endDate: String,
-)
+) : Serializable
 
 data class RegisterCompetitionResponse(
     @field:Json(name = "clientSecret") val clientSecret: String,
 )
 
+data class Registration(
+    @field:Json(name = "progress") val progress: Int,
+)

@@ -74,6 +74,25 @@ class AppRepository {
         }
     }
 
+    suspend fun getLeaderboard(competitionId: String): OperationResult<Pair<Competition, List<Registration>>> {
+        return try {
+            OperationResult.Success(
+                Pair(
+                    apiClient.getCompetitionDetails(competitionId),
+                    apiClient.getLeaderboard(competitionId)
+                )
+            )
+        } catch (e: HttpException) {
+            OperationResult.Error(
+                e.response()?.code() ?: 500,
+                e.response()?.errorBody()?.string() ?: DEFAULT_ERROR_MESSAGE
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            OperationResult.Error(1000, OperationResult.getErrorMessage(1000))
+        }
+    }
+
     private fun getParsedErrorBody(status: Int, errorBody: String?): OperationResult.Error {
         return if (errorBody != null) {
             try {
