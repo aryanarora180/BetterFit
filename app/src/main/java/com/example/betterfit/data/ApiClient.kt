@@ -39,11 +39,15 @@ object ApiClient {
         @GET("competition/trending/")
         suspend fun getTrendingCompetitions(): List<Competition>
 
-        @FormUrlEncoded
-        @POST("competition/trending/")
+        @GET("competition/details/{competition_id}")
+        suspend fun getCompetitionDetails(
+            @Path("competition_id") competitionId: String,
+        ): Competition
+
+        @POST("registration/register/{user_id}/{competition_id}/")
         suspend fun registerToCompetition(
-            @Field("userId") userId: String,
-            @Field("competitionId") competitionId: String,
+            @Path("user_id") userId: String,
+            @Path("competition_id") competitionId: String,
         ): ResponseBody
     }
 }

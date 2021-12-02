@@ -24,3 +24,20 @@ sealed class LoginState {
 
     object SignedIn : LoginState()
 }
+
+sealed class CompetitionDetailsState {
+
+    object Loading : CompetitionDetailsState()
+    object Registering : CompetitionDetailsState()
+    data class TakePayment(
+        val clientSecret: String
+    ) : CompetitionDetailsState()
+
+    object Registered : CompetitionDetailsState()
+
+    data class Data(
+        val details: Competition,
+    ) : CompetitionDetailsState()
+
+    class Error(val message: String) : CompetitionDetailsState()
+}

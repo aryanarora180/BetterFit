@@ -1,9 +1,14 @@
 package com.example.betterfit.data
 
+import com.example.betterfit.helper.DataStoreUtils
 import org.json.JSONObject
 import retrofit2.HttpException
+import javax.inject.Inject
 
 class AppRepository {
+
+    @Inject
+    lateinit var dataStoreUtils: DataStoreUtils
 
     private val apiClient = ApiClient.build()
 
@@ -20,6 +25,21 @@ class AppRepository {
         }
     }
 
+    suspend fun getCompetitionDetails(competitionId: String): OperationResult<Competition> {
+        return try {
+            val result = apiClient.getCompetitionDetails(competitionId)
+            OperationResult.Success(result)
+        } catch (e: HttpException) {
+            OperationResult.Error(
+                e.response()?.code() ?: 500,
+                e.response()?.errorBody()?.string() ?: DEFAULT_ERROR_MESSAGE
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            OperationResult.Error(1000, OperationResult.getErrorMessage(1000))
+        }
+    }
+
     suspend fun getTrendingCompetitions(): OperationResult<List<Competition>> {
         return try {
             val result = apiClient.getTrendingCompetitions()
@@ -27,7 +47,22 @@ class AppRepository {
         } catch (e: HttpException) {
             OperationResult.Error(
                 e.response()?.code() ?: 500,
-                e.response()?.errorBody()?.string() ?: "No error message"
+                e.response()?.errorBody()?.string() ?: DEFAULT_ERROR_MESSAGE
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            OperationResult.Error(1000, OperationResult.getErrorMessage(1000))
+        }
+    }
+
+    suspend fun registerToCompetition(competitionId: String): OperationResult<Unit> {
+        return try {
+            apiClient.registerToCompetition(dataStoreUtils.getUserId() ?: "", competitionId)
+            OperationResult.Success(Unit)
+        } catch (e: HttpException) {
+            OperationResult.Error(
+                e.response()?.code() ?: 500,
+                e.response()?.errorBody()?.string() ?: DEFAULT_ERROR_MESSAGE
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -49,5 +84,9 @@ class AppRepository {
         } else {
             OperationResult.Error(status, null)
         }
+    }
+
+    companion object {
+        private const val DEFAULT_ERROR_MESSAGE = "Unknown error occurred"
     }
 }
