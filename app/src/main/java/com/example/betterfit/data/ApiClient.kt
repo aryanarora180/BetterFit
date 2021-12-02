@@ -1,13 +1,14 @@
 package com.example.betterfit.data
 
-import android.content.Context
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.http.*
 
 object ApiClient {
 
-    private const val BASE_URL = ""
+    private const val BASE_URL = "https://betterfit-backend.herokuapp.com/api/"
 
     private fun okHttpClient(): OkHttpClient {
         return OkHttpClient.Builder()
@@ -17,7 +18,7 @@ object ApiClient {
 
 
     private lateinit var apiService: ApiService
-    fun build(context: Context): ApiService {
+    fun build(): ApiService {
         if (!(ApiClient::apiService.isInitialized)) {
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -30,5 +31,19 @@ object ApiClient {
 
     interface ApiService {
 
+        @POST("user/login/")
+        suspend fun signIn(
+            @Body loginBody: LoginRequestBody,
+        ): LoginResponse
+
+        @GET("competition/trending/")
+        suspend fun getTrendingCompetitions(): List<Competition>
+
+        @FormUrlEncoded
+        @POST("competition/trending/")
+        suspend fun registerToCompetition(
+            @Field("userId") userId: String,
+            @Field("competitionId") competitionId: String,
+        ): ResponseBody
     }
 }

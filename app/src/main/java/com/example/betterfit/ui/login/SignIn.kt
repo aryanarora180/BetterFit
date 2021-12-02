@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.betterfit.R
+import com.example.betterfit.data.LoginState
 import com.example.betterfit.ui.theme.BetterFitTheme
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -33,12 +34,14 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
     val snackbarCoroutineScope = rememberCoroutineScope()
 
     val context = LocalContext.current
+    val serverClientId = "150943160797-355b6ahtcb1t4mcp1saq94mo6qpaod6g.apps.googleusercontent.com"
     val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(
         context,
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestEmail()
             .requestScopes(Scope(Scopes.FITNESS_ACTIVITY_READ))
-            .requestServerAuthCode("150943160797-355b6ahtcb1t4mcp1saq94mo6qpaod6g.apps.googleusercontent.com")
+            .requestIdToken(serverClientId)
+            .requestServerAuthCode(serverClientId)
             .build()
     )
     val signInIntent = googleSignInClient.signInIntent
@@ -49,12 +52,9 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
 
             if (task.isSuccessful) {
-                viewModel.isSigningIn = false
-                snackbarCoroutineScope.launch {
-                    scaffoldState.snackbarHostState.showSnackbar("Sign in success. Server auth code: ${task.result.serverAuthCode}")
-                }
+                viewModel.signIn(task.result.serverAuthCode ?: "", task.result.idToken ?: "")
             } else {
-                viewModel.isSigningIn = false   
+                viewModel.state = LoginState.Waiting
                 snackbarCoroutineScope.launch {
                     scaffoldState.snackbarHostState.showSnackbar("Sign in failed")
                 }
@@ -74,9 +74,9 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
         ) {
             BetterFitHeader()
             GoogleSignInButton(
-                isSigningIn = viewModel.isSigningIn,
+                isSigningIn = viewModel.state == LoginState.SigningIn,
                 onClick = {
-                    viewModel.isSigningIn = true
+                    viewModel.state = LoginState.SigningIn
                     signInLauncher.launch(signInIntent)
                 }
             )

@@ -18,8 +18,8 @@ object MVVMModule {
 
     @Provides
     @Singleton
-    fun provideRepository(@ApplicationContext context: Context): AppRepository {
-        return AppRepository(context)
+    fun provideRepository(): AppRepository {
+        return AppRepository()
     }
 
     @Provides

@@ -15,6 +15,7 @@ class DataStoreUtils {
     lateinit var dataStore: DataStore<Preferences>
 
     private val KEY_AUTH_TOKEN = stringPreferencesKey("auth_token")
+    private val KEY_USER_ID = stringPreferencesKey("user_id")
 
     suspend fun getAuthToken(): String? =
         dataStore.data.map { preferences -> preferences[KEY_AUTH_TOKEN] }.first()
@@ -25,9 +26,19 @@ class DataStoreUtils {
         }
     }
 
+    suspend fun getUserId(): String? =
+        dataStore.data.map { preferences -> preferences[KEY_USER_ID] }.first()
+
+    suspend fun storeUserId(newUserId: String) {
+        dataStore.edit { preferences ->
+            preferences[KEY_USER_ID] = newUserId
+        }
+    }
+
     suspend fun signOut() {
         dataStore.edit { preferences ->
             preferences[KEY_AUTH_TOKEN] = ""
+            preferences[KEY_USER_ID] = ""
         }
     }
 }

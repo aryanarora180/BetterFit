@@ -77,4 +77,6 @@ dependencies {
     kapt "com.google.dagger:hilt-compiler:2.38.1"
 
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
+
+    implementation 'com.stripe:stripe-android:18.0.0'
 }

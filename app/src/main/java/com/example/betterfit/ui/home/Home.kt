@@ -13,17 +13,24 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.betterfit.data.Competition
+import com.example.betterfit.data.HomeState
+import com.example.betterfit.ui.CenteredView
+import com.example.betterfit.ui.ServerConnectionError
 import com.example.betterfit.ui.theme.BetterFitTheme
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+    val state by viewModel.state
+
     val (searchText, onSearchTextChanged) = remember {
         mutableStateOf("")
     }
@@ -36,24 +43,32 @@ fun HomeScreen() {
                 onTextChanged = onSearchTextChanged,
                 onSearch = {/* TODO */ },
             )
-            TrendingCompetitions(
-                isLoading = false,
-                competitions = MutableList(12) {
-                    Competition(
-                        competitionName = "2500 steps a day",
-                        competitionDuration = "1 week",
-                        competitionRegistered = 200
+            when (state) {
+                is HomeState.Loading -> {
+                    TrendingCompetitions(isLoading = true)
+                    Categories(isLoading = true)
+                }
+
+                is HomeState.Data -> {
+                    TrendingCompetitions(
+                        isLoading = false,
+                        competitions = (state as HomeState.Data).trending
+                    )
+                    Categories(
+                        isLoading = false,
+                        categories = (state as HomeState.Data).categories
                     )
                 }
-            )
-            Categories(
-                isLoading = false,
-                categories = listOf(
-                    "Walking",
-                    "Running",
-                    "Move minutes"
-                )
-            )
+
+                is HomeState.Error -> {
+                    CenteredView {
+                        ServerConnectionError(
+                            errorText = (state as HomeState.Error).message,
+                            onRetryClick = { viewModel.getTrendingCompetitions() }
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -89,9 +104,11 @@ fun TrendingCompetitions(
     isLoading: Boolean = true,
     competitions: List<Competition>? = null,
 ) {
-    Text(text = "What's trending",
+    Text(
+        text = "What's trending",
         style = MaterialTheme.typography.h5,
-        modifier = Modifier.padding(start = 24.dp, top = 32.dp, bottom = 8.dp))
+        modifier = Modifier.padding(start = 24.dp, top = 32.dp, bottom = 8.dp)
+    )
 
     if (isLoading) {
         CircularProgressIndicator(
@@ -116,10 +133,15 @@ fun TrendingCompetitionCard(
         Column(
             modifier = Modifier.padding(all = 16.dp)
         ) {
-            Text(text = competition.competitionName, style = MaterialTheme.typography.subtitle1)
-            Text(text = competition.competitionDuration, style = MaterialTheme.typography.subtitle2)
-            Text(text = competition.competitionRegistered.toString(),
-                style = MaterialTheme.typography.body2)
+            Text(text = competition.title, style = MaterialTheme.typography.subtitle1)
+            Text(
+                text = "${competition.startDate} to ${competition.endDate}",
+                style = MaterialTheme.typography.subtitle2
+            )
+            Text(
+                text = competition.category,
+                style = MaterialTheme.typography.body2
+            )
         }
     }
 }
@@ -129,9 +151,11 @@ fun Categories(
     isLoading: Boolean = true,
     categories: List<String>? = null,
 ) {
-    Text(text = "Categories",
+    Text(
+        text = "Categories",
         style = MaterialTheme.typography.h5,
-        modifier = Modifier.padding(start = 24.dp, top = 32.dp, bottom = 8.dp))
+        modifier = Modifier.padding(start = 24.dp, top = 32.dp, bottom = 8.dp)
+    )
 
     if (isLoading) {
         CircularProgressIndicator(

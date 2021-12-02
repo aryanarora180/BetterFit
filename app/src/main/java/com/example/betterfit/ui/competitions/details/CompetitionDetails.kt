@@ -1,6 +1,7 @@
 package com.example.betterfit.ui.competitions.details
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
@@ -9,13 +10,20 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.betterfit.getActivity
 import com.example.betterfit.ui.theme.BetterFitTheme
+import com.stripe.android.paymentsheet.PaymentSheet
+import com.stripe.android.paymentsheet.PaymentSheetResult
+import com.stripe.android.paymentsheet.PaymentSheetResultCallback
 
 @Composable
 fun CompetitionDetailsScreen() {
+    val context = LocalContext.current
+
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -50,10 +58,36 @@ fun CompetitionDetailsScreen() {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        val paymentSheet = PaymentSheet(context.getActivity()!!) {
+                            when (it) {
+                                is PaymentSheetResult.Completed -> {
+                                    Log.e("StripePayment", "Payment complete")
+                                }
+                                is PaymentSheetResult.Canceled -> {
+                                    Log.e("StripePayment", "Payment canceled")
+                                }
+                                is PaymentSheetResult.Failed -> {
+                                    Log.e(
+                                        "StripePayment",
+                                        "Payment failed",
+                                        it.error.fillInStackTrace()
+                                    )
+                                }
+                            }
+                        }
+                        val configuration = PaymentSheet.Configuration("BetterFit")
+                        paymentSheet.presentWithPaymentIntent("dada", configuration)
+                    },
                 ) {
                     Text(text = "Join")
                 }
+                Text(
+                    text = "You'll be redirected to a payment gateway to pay ₹99",
+                    style = MaterialTheme.typography.caption,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 8.dp, start = 24.dp, end = 24.dp)
+                )
             }
         }
     }
