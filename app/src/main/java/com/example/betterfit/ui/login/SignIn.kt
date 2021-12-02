@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +30,7 @@ import com.google.android.gms.common.api.Scope
 import kotlinx.coroutines.launch
 
 @Composable
-fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
+fun SignInScreen(viewModel: SignInViewModel = hiltViewModel(), onLogin: () -> Unit) {
     val scaffoldState = rememberScaffoldState()
     val snackbarCoroutineScope = rememberCoroutineScope()
 
@@ -61,6 +62,10 @@ fun SignInScreen(viewModel: SignInViewModel = hiltViewModel()) {
             }
         }
     )
+
+    if (viewModel.state is LoginState.SignedIn) {
+        LaunchedEffect(Unit) { onLogin() }
+    }
 
     Scaffold(
         scaffoldState = scaffoldState
@@ -144,6 +149,8 @@ fun GoogleSignInButton(
 @Composable
 fun PreviewLoginScreen() {
     BetterFitTheme {
-        SignInScreen()
+        SignInScreen(
+            onLogin = { }
+        )
     }
 }

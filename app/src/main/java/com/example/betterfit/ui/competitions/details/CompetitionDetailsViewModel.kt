@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.betterfit.data.AppRepository
 import com.example.betterfit.data.CompetitionDetailsState
 import com.example.betterfit.data.OperationResult
+import com.example.betterfit.helper.DataStoreUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,6 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CompetitionDetailsViewModel @Inject constructor(
     private val repository: AppRepository,
+    private val dataStoreUtils: DataStoreUtils
 ) : ViewModel() {
 
     private lateinit var _competitionId: String
@@ -39,7 +41,8 @@ class CompetitionDetailsViewModel @Inject constructor(
 
         state.value = CompetitionDetailsState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            when (val result = repository.registerToCompetition(_competitionId)) {
+            when (val result =
+                repository.registerToCompetition(_competitionId, dataStoreUtils.getAuthToken())) {
                 is OperationResult.Success -> {
                     state.value = CompetitionDetailsState.TakePayment(result.data.clientSecret)
                 }

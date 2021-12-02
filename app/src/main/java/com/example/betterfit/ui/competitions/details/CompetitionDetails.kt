@@ -2,6 +2,8 @@ package com.example.betterfit.ui.competitions.details
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,7 +22,7 @@ import com.example.betterfit.ui.theme.BetterFitTheme
 
 @Composable
 fun CompetitionDetailsScreen(
-    competitionId: String = "619fde46a0f86acad93d92d7",
+    competitionId: String,
     viewModel: CompetitionDetailsViewModel = hiltViewModel(),
     onJoinCompetition: (String) -> Unit
 ) {
@@ -83,11 +85,14 @@ fun CompetitionDetails(
         competitionName = competition.title,
         competitionDuration = "${competition.startDate} to ${competition.endDate}"
     )
-    PaidCompetitionDetails(
-        modifier = Modifier.padding(vertical = 8.dp),
-        currentPrizePool = competition.prizePool,
-        entryFee = competition.entryFee
-    )
+
+    if (competition.entryFee != 0) {
+        PaidCompetitionDetails(
+            modifier = Modifier.padding(vertical = 8.dp),
+            currentPrizePool = competition.prizePool,
+            entryFee = competition.entryFee
+        )
+    }
     CompetitionDetails(
         modifier = Modifier.padding(start = 24.dp, top = 8.dp, end = 24.dp),
         competitionDetails = """
@@ -110,12 +115,14 @@ fun CompetitionDetails(
         ) {
             Text(text = "Join")
         }
-        Text(
-            text = "You'll be redirected to a payment gateway to pay ₹${competition.entryFee}",
-            style = MaterialTheme.typography.caption,
-            textAlign = TextAlign.Center,
-            modifier = Modifier.padding(top = 8.dp, start = 24.dp, end = 24.dp)
-        )
+        if (competition.entryFee != 0) {
+            Text(
+                text = "You'll be redirected to a payment gateway to pay ₹${competition.entryFee}",
+                style = MaterialTheme.typography.caption,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp, start = 24.dp, end = 24.dp)
+            )
+        }
     }
 }
 
@@ -184,6 +191,8 @@ fun CompetitionDetails(
 @Composable
 fun CompetitionDetailsScreenPreview() {
     BetterFitTheme {
-        CompetitionDetailsScreen { }
+        CompetitionDetailsScreen(
+            competitionId = ""
+        ) { }
     }
 }

@@ -20,17 +20,17 @@ object MVVMModule {
 
     @Provides
     @Singleton
-    fun provideRepository(): AppRepository {
-        return AppRepository()
-    }
-
-    @Provides
-    @Singleton
     fun provideDataStoreUtils(@ApplicationContext context: Context): DataStoreUtils {
         return DataStoreUtils(
             PreferenceDataStoreFactory.create {
                 context.preferencesDataStoreFile("preferences")
             }
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideRepository(): AppRepository {
+        return AppRepository()
     }
 }

@@ -1,14 +1,12 @@
 package com.example.betterfit.data
 
+import android.util.Log
 import com.example.betterfit.helper.DataStoreUtils
 import org.json.JSONObject
 import retrofit2.HttpException
 import javax.inject.Inject
 
 class AppRepository {
-
-    @Inject
-    lateinit var dataStoreUtils: DataStoreUtils
 
     private val apiClient = ApiClient.build()
 
@@ -17,7 +15,6 @@ class AppRepository {
             val result = apiClient.signIn(LoginRequestBody(idToken, authCode))
             OperationResult.Success(result)
         } catch (e: HttpException) {
-            e.printStackTrace()
             getParsedErrorBody(e.code(), e.response()?.errorBody()?.string())
         } catch (e: Exception) {
             e.printStackTrace()
@@ -55,13 +52,22 @@ class AppRepository {
         }
     }
 
-    suspend fun registerToCompetition(competitionId: String): OperationResult<RegisterCompetitionResponse> {
+    suspend fun registerToCompetition(
+        competitionId: String,
+        authToken: String?
+    ): OperationResult<RegisterCompetitionResponse> {
         return try {
-            //TODO: Take user id as param
-            val result = apiClient.registerToCompetition("123", competitionId)
+            val result =
+                apiClient.registerToCompetition(
+                    "Bearer $authToken",
+                    competitionId
+                )
+            Log.e(
+                javaClass.simpleName,
+                "Registering to competition $authToken}"
+            )
             OperationResult.Success(result)
         } catch (e: HttpException) {
-            e.printStackTrace()
             OperationResult.Error(
                 e.response()?.code() ?: 500,
                 e.response()?.errorBody()?.string() ?: DEFAULT_ERROR_MESSAGE

@@ -1,6 +1,7 @@
 package com.example.betterfit.ui.home
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,7 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Search
@@ -28,21 +31,25 @@ import com.example.betterfit.ui.ServerConnectionError
 import com.example.betterfit.ui.theme.BetterFitTheme
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), onCompetitionTap: (String) -> Unit) {
     val state by viewModel.state
 
     Scaffold { innerPadding ->
-        Column(modifier = Modifier.padding(innerPadding)) {
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+        ) {
             when (state) {
                 is HomeState.Loading -> {
-                    TrendingCompetitions(isLoading = true)
+                    TrendingCompetitions(isLoading = true, onCompetitionTap = { })
                     Categories(isLoading = true)
                 }
 
                 is HomeState.Data -> {
                     TrendingCompetitions(
                         isLoading = false,
-                        competitions = (state as HomeState.Data).trending
+                        competitions = (state as HomeState.Data).trending,
+                        onCompetitionTap = onCompetitionTap
                     )
                     Categories(
                         isLoading = false,
@@ -67,6 +74,7 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel()) {
 fun TrendingCompetitions(
     isLoading: Boolean = true,
     competitions: List<Competition>? = null,
+    onCompetitionTap: (String) -> Unit
 ) {
     Text(
         text = "What's trending",
@@ -81,7 +89,7 @@ fun TrendingCompetitions(
     } else {
         LazyRow(contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)) {
             items(competitions ?: emptyList()) { competition ->
-                TrendingCompetitionCard(competition)
+                TrendingCompetitionCard(competition, onTap = onCompetitionTap)
             }
         }
     }
@@ -90,9 +98,12 @@ fun TrendingCompetitions(
 @Composable
 fun TrendingCompetitionCard(
     competition: Competition,
+    onTap: (String) -> Unit
 ) {
     Card(
-        modifier = Modifier.padding(horizontal = 8.dp)
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .clickable { onTap(competition.id) }
     ) {
         Column(
             modifier = Modifier.padding(all = 16.dp)
@@ -155,6 +166,6 @@ fun CategoryCard(
 @Composable
 fun HomeScreenPreview() {
     BetterFitTheme {
-        HomeScreen()
+        HomeScreen { }
     }
 }

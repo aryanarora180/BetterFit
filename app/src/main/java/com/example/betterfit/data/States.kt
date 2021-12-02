@@ -6,7 +6,12 @@ sealed class HomeState {
 
     data class Data(
         val trending: List<Competition>,
-        val categories: List<String> = listOf("Walking", "Running", "Move minutes", "Heart points")
+        val categories: List<String> = listOf(
+            "Walking",
+            "Running",
+            "Move minutes",
+            "Heart points"
+        )
     ) : HomeState()
 
     class Error(val message: String) : HomeState()

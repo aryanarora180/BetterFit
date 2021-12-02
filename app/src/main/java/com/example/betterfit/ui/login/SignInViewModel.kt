@@ -25,11 +25,8 @@ class SignInViewModel @Inject constructor(
     var state by mutableStateOf<LoginState>(LoginState.Waiting)
 
     fun signIn(idToken: String, authCode: String) {
-        Log.e(javaClass.simpleName, "ID token: $idToken")
-        Log.e(javaClass.simpleName, "Auth code: $authCode")
-
         state = LoginState.SigningIn
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             state = when (val result = repository.signIn(idToken, authCode)) {
                 is OperationResult.Success -> {
                     dataStoreUtils.storeAuthToken(result.data.token)
