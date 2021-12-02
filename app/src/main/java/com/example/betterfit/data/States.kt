@@ -38,8 +38,6 @@ sealed class CompetitionDetailsState {
         val clientSecret: String
     ) : CompetitionDetailsState()
 
-    object Registered : CompetitionDetailsState()
-
     data class Data(
         val details: Competition,
     ) : CompetitionDetailsState()

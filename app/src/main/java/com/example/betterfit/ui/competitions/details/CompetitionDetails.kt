@@ -63,10 +63,6 @@ fun CompetitionDetailsScreen(
                 is CompetitionDetailsState.TakePayment -> {
                     onJoinCompetition((state as CompetitionDetailsState.TakePayment).clientSecret)
                 }
-
-                is CompetitionDetailsState.Registered -> {
-                    TODO("Navigate to progress page")
-                }
             }
         }
     }
@@ -93,10 +89,10 @@ fun CompetitionDetails(
     CompetitionDetails(
         modifier = Modifier.padding(start = 24.dp, top = 8.dp, end = 24.dp),
         competitionDetails = """
-                    • 5K to 10K and beyond - earn milestone badges and trophies for streaks and smashing personal bests
-                    • Join or share public running challenges with your friends via any social media or messaging platform
+                    • Earn rewards for completing challenging yourself
+                    • Join or share public challenges with your friends via any social media or messaging platform
                     • Beat running log bests and get a virtual high five from your worldwide run club
-                    • Run in weekly and monthly NRC distance challenges or create a Challenge and invite your friends
+                    • Run in weekly and monthly challenges
                     • Reach goals, earn achievements and go the distance.
                 """.trimIndent()
     )
