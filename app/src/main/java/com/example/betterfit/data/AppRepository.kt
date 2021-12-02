@@ -62,10 +62,6 @@ class AppRepository {
                     "Bearer $authToken",
                     competitionId
                 )
-            Log.e(
-                javaClass.simpleName,
-                "Registering to competition $authToken}"
-            )
             OperationResult.Success(result)
         } catch (e: HttpException) {
             OperationResult.Error(

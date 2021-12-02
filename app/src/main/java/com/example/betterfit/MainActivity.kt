@@ -5,6 +5,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,9 +28,13 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var dataStoreUtils: DataStoreUtils
 
+    private lateinit var navController: NavHostController
+
+    private lateinit var paymentSheet: PaymentSheet
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val activity = this
+        paymentSheet = PaymentSheet(this, ::onPaymentSheetResult)
 
         lifecycleScope.launchWhenCreated {
             if (dataStoreUtils.getAuthToken().isNullOrEmpty() || dataStoreUtils.getUserId()
@@ -42,7 +48,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             BetterFitTheme {
-                val navController = rememberNavController()
+                navController = rememberNavController()
 
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
@@ -64,31 +70,27 @@ class MainActivity : ComponentActivity() {
                         CompetitionDetailsScreen(
                             competitionId =
                             backStackEntry.arguments?.getString("competitionId") ?: "",
-                            onJoinCompetition = { clientSecret ->
-                                Log.e(javaClass.simpleName, "Stripeeee")
-                                val paymentSheet = PaymentSheet(activity) {
-                                    when (it) {
-                                        is PaymentSheetResult.Completed -> {
-                                            Log.e("StripePayment", "Payment complete")
-                                        }
-                                        is PaymentSheetResult.Canceled -> {
-                                            Log.e("StripePayment", "Payment canceled")
-                                        }
-                                        is PaymentSheetResult.Failed -> {
-                                            Log.e(
-                                                "StripePayment",
-                                                "Payment failed",
-                                                it.error.fillInStackTrace()
-                                            )
-                                        }
-                                    }
-                                }
-                                val configuration = PaymentSheet.Configuration("BetterFit")
-                                paymentSheet.presentWithPaymentIntent(clientSecret, configuration)
+                            onJoinCompetition = {
+                                val configuration = PaymentSheet.Configuration("Example, Inc.")
+                                paymentSheet.presentWithPaymentIntent(it, configuration)
                             }
                         )
                     }
                 }
+            }
+        }
+    }
+
+    private fun onPaymentSheetResult(paymentResult: PaymentSheetResult) {
+        when (paymentResult) {
+            is PaymentSheetResult.Completed -> {
+                Log.e("StripePayment", "Payment complete")
+            }
+            is PaymentSheetResult.Canceled -> {
+                Log.e("StripePayment", "Payment canceled")
+            }
+            is PaymentSheetResult.Failed -> {
+                Log.e("StripePayment", "Payment failed")
             }
         }
     }
